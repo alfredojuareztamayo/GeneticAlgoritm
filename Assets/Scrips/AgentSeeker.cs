@@ -4,28 +4,24 @@ using Unity.VisualScripting.Antlr3.Runtime.Misc;
 using UnityEngine;
 
 
-public class AgentSeeker : MonoBehaviour
-{
+public class AgentSeeker : MonoBehaviour {
     [SerializeField] GameObject target;
     [SerializeField] AgentBehaviour agentBehaviour;
 
 
-    public List<GameObject> food = new List<GameObject>();
+    private List<GameObject> food = new List<GameObject>();
     private List<GameObject> poison = new List<GameObject>();
 
     private int[] dna = new int[2];
 
     Agent agent;
-    private void Start()
-    {
-        //GameObject[] foodArray = GameObject.FindGameObjectsWithTag("food");
-        //foreach (GameObject foodObject in foodArray)
-        //{
-        //    food.Add(foodObject);
-        //} 
+    private void Start() {
+        GameObject[] foodArray = GameObject.FindGameObjectsWithTag("food");
+        foreach (GameObject foodObject in foodArray) {
+            food.Add(foodObject);
+        }
         GameObject[] posionArray = GameObject.FindGameObjectsWithTag("poison");
-        foreach (GameObject posionObject in posionArray)
-        {
+        foreach (GameObject posionObject in posionArray) {
             poison.Add(posionObject);
         }
         //dna = 
@@ -37,53 +33,55 @@ public class AgentSeeker : MonoBehaviour
 
     }
 
-    private void Update()
-    {
-        
+    private void Update() {
+
     }
-    private void FixedUpdate()
-    {
+    private void FixedUpdate() {
         behaviour(food, poison);
         //eat(food);
         //eat(poison);
-        if (target == null)
-        {
+        if (target == null) {
             return;
         }
     }
-    private Vector3 eat(List<GameObject> temp)
-    {
-        
-            float record = float.PositiveInfinity;
-            int closest = -1;
-            for (int i = 0; i < temp.Count; i++)
-            {
-                float d = Vector3.Distance(transform.position, temp[i].transform.position);
-                if (d < record)
-                {
-                    record = d;
-                    closest = i;
-                }
+    private Vector3 eat(List<GameObject> temp) {
+
+        float record = float.PositiveInfinity;
+        GameObject closest = null;
+        foreach (GameObject foodObject in temp) {
+            float dist = Vector3.Distance(transform.position, foodObject.transform.position);
+            if (dist < record) {
+                record = dist;
+                closest = foodObject;
             }
-           
-            target = temp[closest];
-        if(record <5)
-        {
-            temp.RemoveAt(closest);
         }
-       else if (record > -1)
-        {
+        /*
+        int closest = -1;
+        for (int i = 0; i < temp.Count; i++) {
+            float d = Vector3.Distance(transform.position, temp[i].transform.position);
+            if (d < record) {
+                record = d;
+                closest = i;
+            }
+        }
+
+        target = temp[closest];
+        */
+        target = closest;
+        if (record < 5) {
+            //temp.RemoveAt(closest);
+           temp.Remove(closest);
+        } else if (record > -1) {
             //agent.seeking(temp[closest].transform);
             return SteeringBehaviours.Seek(transform, target.transform.position);
         }
-            //agent.getRB().velocity = SteeringBehaviours.Seek(transform, target.transform.position);
-         return Vector3.zero;
-        
+        //agent.getRB().velocity = SteeringBehaviours.Seek(transform, target.transform.position);
+        return Vector3.zero;
+
     }
 
 
-    private void behaviour(List<GameObject> good, List<GameObject> bad)
-    {
+    private void behaviour(List<GameObject> good, List<GameObject> bad) {
         Vector3 steerG = eat(good);
         Vector3 steerB = eat(bad);
 
@@ -95,31 +93,28 @@ public class AgentSeeker : MonoBehaviour
         //agent.applyForce(steerB);
 
     }
-    
-    private void OnDrawGizmos()
-    {
-        if (agent != null && agent.getEyePerception() != null)
-        {
+
+    private void OnDrawGizmos() {
+        if (agent != null && agent.getEyePerception() != null) {
             Gizmos.color = Color.green;
             Gizmos.DrawWireSphere(agent.getEyePerception().position, 5);
         }
     }
 
-  
-    private void OnCollisionEnter(Collision collision)
-    {
-        if (collision.gameObject.CompareTag("food"))
-        {
+
+    private void OnCollisionEnter(Collision collision) {
+        if (collision.gameObject.CompareTag("food")) {
             GameObject foodToDestroy = collision.gameObject;
-            Destroy(foodToDestroy);
+            //Destroy(foodToDestroy);
+            foodToDestroy.SetActive(false);
             food.Remove(foodToDestroy);
             agent.getHealt(2);
-     
+
         }
-        if (collision.gameObject.CompareTag("poison"))
-        {
+        if (collision.gameObject.CompareTag("poison")) {
             GameObject foodToDestroy = collision.gameObject;
-            Destroy(foodToDestroy);
+            //Destroy(foodToDestroy);
+            foodToDestroy.SetActive(false);
             poison.Remove(foodToDestroy);
             agent.getDamage(2);
         }

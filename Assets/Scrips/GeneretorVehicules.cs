@@ -13,7 +13,7 @@ public class GeneretorVehicule : MonoBehaviour
 
     private void generatePoison()
     {
-        for (int i = 0; i < 1; i++)
+        for (int i = 0; i < 2; i++)
         {
             Instantiate(vehicule, new Vector3(Random.Range(-20, 20), 0, Random.Range(20, -20)), Quaternion.identity);
         }
