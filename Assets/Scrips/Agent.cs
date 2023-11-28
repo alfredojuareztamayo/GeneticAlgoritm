@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-
+[RequireComponent(typeof(Rigidbody))]
 public class Agent : MonoBehaviour 
 {
     [SerializeField] float life, vel, armor, strengh;
@@ -11,9 +11,30 @@ public class Agent : MonoBehaviour
     [SerializeField] Transform eyePerception;
     public float maxVel, steeringForce;
 
+    public Vector3 aceleration =new Vector3(0,0,0);
+    public float maxSpeed = 8;
+    public float maxForce = 0.2f;
+    public Vector3 velocity =new Vector3(0,0,-2);
+
+
+
+
     private void Start()
     {
         rb = GetComponent<Rigidbody>();
+    }
+
+    //private void Update()
+    //{
+    //    rb.velocity += aceleration;
+    //    rb.velocity = Vector3.ClampMagnitude(rb.velocity, maxSpeed);
+    //    rb.position = rb.velocity;
+    //   // aceleration *= 0;
+        
+    //}
+    public void applyForce(Vector3 force)
+    {
+        aceleration += force;
     }
     public void setValues(AgentType agentType)
     {
@@ -58,6 +79,19 @@ public class Agent : MonoBehaviour
         maxVel = _maxVel;
     }
     public float getMaxVel() { return maxVel; }
+
+
+    public void seeking(Transform target)
+    {
+        Vector3 desired = target.position - gameObject.transform.position;
+        desired.Normalize();
+        desired *= maxSpeed;
+        Vector3 steer = desired - rb.velocity;
+        steer.Normalize();
+        steer *= maxSpeed;
+
+        applyForce(steer);
+    }
 }
 
 public enum AgentType
