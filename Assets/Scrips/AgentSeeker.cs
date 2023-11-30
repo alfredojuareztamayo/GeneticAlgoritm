@@ -40,12 +40,10 @@ public class AgentSeeker : MonoBehaviour {
         behaviour(food, poison);
         //eat(food);
         //eat(poison);
-        if (target == null) {
-            return;
-        }
+       
     }
     private Vector3 eat(List<GameObject> temp) {
-
+        
         float record = float.PositiveInfinity;
         GameObject closest = null;
         foreach (GameObject foodObject in temp) {
@@ -55,29 +53,22 @@ public class AgentSeeker : MonoBehaviour {
                 closest = foodObject;
             }
         }
-        /*
-        int closest = -1;
-        for (int i = 0; i < temp.Count; i++) {
-            float d = Vector3.Distance(transform.position, temp[i].transform.position);
-            if (d < record) {
-                record = d;
-                closest = i;
-            }
-        }
-
-        target = temp[closest];
-        */
+        
         target = closest;
+        if (target == null)
+        {
+            return Vector3.zero;
+        }
         if (record < 5) {
-            //temp.RemoveAt(closest);
+       
            temp.Remove(closest);
         } else if (record > -1) {
-            //agent.seeking(temp[closest].transform);
+          
             return SteeringBehaviours.Seek(transform, target.transform.position);
         }
-        //agent.getRB().velocity = SteeringBehaviours.Seek(transform, target.transform.position);
-        return Vector3.zero;
+       
 
+        return Vector3.zero;
     }
 
 

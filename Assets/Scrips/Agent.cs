@@ -15,7 +15,7 @@ public class Agent : MonoBehaviour
     public float maxSpeed = 8;
     public float maxForce = 0.2f;
     public Vector3 velocity =new Vector3(0,0,-2);
-
+    public bool isDead; 
 
 
 
@@ -50,12 +50,13 @@ public class Agent : MonoBehaviour
                 break;
 
             case AgentType.Seeker:
-                life = 10;
+                life = 5;
                 vel = 10;
                 armor = 10;
                 strengh = 20;
                 maxVel = 6;
                 steeringForce = 15;
+                isDead = false;
                 break;
         }
     }
