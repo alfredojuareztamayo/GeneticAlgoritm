@@ -51,7 +51,7 @@ public class Agent : MonoBehaviour
 
             case AgentType.Seeker:
                 life = 5;
-                vel = 10;
+                vel = 5;
                 armor = 10;
                 strengh = 20;
                 maxVel = 6;

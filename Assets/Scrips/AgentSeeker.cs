@@ -8,11 +8,12 @@ public class AgentSeeker : MonoBehaviour {
     [SerializeField] GameObject target;
     [SerializeField] AgentBehaviour agentBehaviour;
 
-
+    private Animator animador;
     private List<GameObject> food = new List<GameObject>();
     private List<GameObject> poison = new List<GameObject>();
 
     private int[] dna = new int[2];
+
 
     Agent agent;
     private void Start() {
@@ -29,6 +30,7 @@ public class AgentSeeker : MonoBehaviour {
         dna[1] = Random.Range(-5, 6);
 
         agent = GetComponent<Agent>();
+        animador = GetComponent<Animator>();
         agent.setValues(AgentType.Seeker);
 
     }
@@ -57,14 +59,17 @@ public class AgentSeeker : MonoBehaviour {
         target = closest;
         if (target == null)
         {
+            animador.SetBool("isWalking", false);
             return Vector3.zero;
         }
         if (record < 5) {
        
            temp.Remove(closest);
         } else if (record > -1) {
-          
+
+            animador.SetBool("isWalking", true);
             return SteeringBehaviours.Seek(transform, target.transform.position);
+
         }
        
 
@@ -79,8 +84,10 @@ public class AgentSeeker : MonoBehaviour {
         steerG *= dna[0];
         steerB *= dna[1];
 
+        agent.getRB().velocity *= 0.5f;
         agent.getRB().AddForce(steerG);
         agent.getRB().AddForce(steerB);
+
         //agent.applyForce(steerB);
 
     }
